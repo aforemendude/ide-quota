@@ -7,8 +7,16 @@ const main = async () => {
     // 1. Find the Language Server process PID
     let pid;
     try {
-      const pgrepOutput = execSync('pgrep --full language_server_linux_x64').toString().trim();
-      pid = pgrepOutput.split('\n')[0].trim();
+      const wmicOutput = execSync(
+        `wmic process where "name='language_server_windows_x64.exe'" get ProcessId /format:list`,
+        { windowsHide: true },
+      )
+        .toString()
+        .trim();
+      const pidMatch = wmicOutput.match(/ProcessId=(\d+)/);
+      if (pidMatch) {
+        pid = pidMatch[1];
+      }
     } catch {
       // Error handled below
     }
@@ -20,8 +28,10 @@ const main = async () => {
     // 2. Extract Token
     let token;
     try {
-      const psOutput = execSync(`ps -f --pid ${pid}`).toString();
-      const tokenMatch = psOutput.match(/--csrf_token ([^\s]+)/);
+      const wmicOutput = execSync(`wmic process where "ProcessId=${pid}" get CommandLine /format:list`, {
+        windowsHide: true,
+      }).toString();
+      const tokenMatch = wmicOutput.match(/--csrf_token\s+([^\s]+)/);
       if (tokenMatch) {
         token = tokenMatch[1];
       }
@@ -36,10 +46,10 @@ const main = async () => {
     // 3. Find active API Ports
     let ports = [];
     try {
-      const lsofOutput = execSync(`lsof -n -P -p ${pid}`).toString();
-      const lines = lsofOutput.split('\n');
+      const netstatOutput = execSync(`netstat -ano`, { windowsHide: true }).toString();
+      const lines = netstatOutput.split('\n');
       for (const line of lines) {
-        if (line.includes('LISTEN') && line.includes('127.0.0.1:')) {
+        if (line.includes('LISTENING') && line.includes(pid)) {
           const match = line.match(/127\.0\.0\.1:(\d+)/);
           if (match) {
             ports.push(match[1]);

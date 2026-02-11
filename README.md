@@ -1,1 +1,1 @@
-# ide-quota
+# IDE Quota
