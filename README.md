@@ -22,7 +22,7 @@ your remaining quotas and reset times.
 The script automatically detects your operating system and routes to the correct implementation.
 
 ```bash
-node bin/quota.js
+npm start
 ```
 
 ## 🛠️ Installation (Optional)
