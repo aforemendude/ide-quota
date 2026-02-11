@@ -2,12 +2,12 @@
   "name": "ide-quota",
   "version": "1.0.0",
   "private": true,
+  "bin": {
+    "ide-quota": "./bin/quota.js"
+  },
   "scripts": {
     "format": "prettier --write .",
     "start": "node bin/quota.js"
-  },
-  "bin": {
-    "ide-quota": "./bin/quota.js"
   },
   "devDependencies": {
     "prettier": "3.8.1"
