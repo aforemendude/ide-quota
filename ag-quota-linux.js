@@ -88,7 +88,7 @@ const main = async () => {
       }
     }
     if (!finalJson) {
-      console.error("❌ Error: Could not get a valid response. Type a character in the IDE to 'wake up' the server.");
+      console.error('❌ Error: Could not get a valid response. Type a character in the IDE to wake up the server.');
       process.exit(1);
     }
 
