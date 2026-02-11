@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "quota": "node bin/quota.js"
+    "start": "node bin/quota.js"
   },
   "bin": {
     "ide-quota": "./bin/quota.js"

@@ -1,6 +1,8 @@
 # 🚀 IDE Quota Checker
 
-A lightweight command-line utility to monitor your AI model usage and quota for the Antigravity/Codeium IDE extension. This tool provides a beautiful, color-coded dashboard directly in your terminal, helping you keep track of your remaining requests and reset times.
+A lightweight command-line utility to monitor your AI model usage and quota for the Antigravity/Codeium IDE extension.
+This tool provides a beautiful, color-coded dashboard directly in your terminal, helping you keep track of your
+remaining requests and reset times.
 
 ## ✨ Features
 
@@ -13,67 +15,47 @@ A lightweight command-line utility to monitor your AI model usage and quota for 
 
 - **Node.js**: (Version 18 or higher recommended)
 - **Active IDE**: The Antigravity extension must be running in your IDE.
-  - _Tip: If the script fails to find a port, try typing a character in your IDE to "wake up" the language server._
-
----
+  - _Tip: If the script fails to find a port, try typing a character in your IDE to wake up the language server._
 
 ## 💻 Usage
 
-### Windows
+The utility automatically detects your operating system and routes to the correct implementation.
 
 ```bash
-node ag-quota-windows.js
+# Run using the router
+node bin/quota.js
 ```
 
-### Linux
+## 🛠️ Installation (Optional)
+
+You can link the package locally to run it from anywhere:
 
 ```bash
-node ag-quota-linux.js
+npm link
+ide-quota
 ```
-
----
-
-## ⚠️ Windows Troubleshooting: Enabling WMIC
-
-The Windows script relies on `wmic` (Windows Management Instrumentation Command-line) to identify the IDE process and its parameters. In newer versions of Windows (Windows 11 22H2 and later), `wmic` is deprecated and may be disabled by default.
-
-### How to Enable WMIC
-
-If you encounter an error stating that `'wmic' is not recognized as an internal or external command`, you can enable it using one of the following methods:
-
-#### Method 1: Using PowerShell (Administrator)
-
-Run the following command in an elevated PowerShell window:
-
-```powershell
-dism /online /add-capability /capabilityName:WMIC~~~~
-```
-
-#### Method 2: Using Windows Settings
-
-1. Open **Settings**.
-2. Go to **Apps** > **Optional features**.
-3. Click **View features** next to "Add an optional feature".
-4. Search for **WMIC**.
-5. Select it and click **Next**, then **Install**.
-
----
 
 ## 🎨 Preview
 
 The tool generates a clean, boxed output similar to this:
 
 ```text
-╭──────────────────────────────────────────────────────────────╮
-│ User Name                                                    │
-│ user@example.com                                             │
-│ Plan: Individual Pro                            Port: 12345  │
-├──────────────────────────────────────────────────────────────┤
-│ Model                    Quota                 Reset         │
-├──────────────────────────────────────────────────────────────┤
-│ Claude 3.5 Sonnet        ██████████████░░░░░░    70%  0d 04h 22m │
-│ GPT-4o                   ████████████████████   100%  0d 00h 00m │
-╰──────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────╮
+│ User                                                                 │
+│ user@example.com                                                     │
+│ Plan: Pro                                                Port: 60411 │
+├──────────────────────────────────────────────────────────────────────┤
+│ Model                         Quota                      Reset       │
+├──────────────────────────────────────────────────────────────────────┤
+│ Claude Opus 4.5 (Thinking)    ████████████████████ 100%  0d 03h 38m  │
+│ Claude Opus 4.6 (Thinking)    ████████████████████ 100%  0d 03h 38m  │
+│ Claude Sonnet 4.5             ████████████████████ 100%  0d 03h 38m  │
+│ Claude Sonnet 4.5 (Thinking)  ████████████████████ 100%  0d 03h 38m  │
+│ Gemini 3 Flash                ████████████████████ 100%  0d 03h 40m  │
+│ Gemini 3 Pro (High)           ████████████████████ 100%  0d 04h 57m  │
+│ Gemini 3 Pro (Low)            ████████████████████ 100%  0d 04h 57m  │
+│ GPT-OSS 120B (Medium)         ████████████████████ 100%  0d 03h 38m  │
+╰──────────────────────────────────────────────────────────────────────╯
 ```
 
 ## 📜 License
