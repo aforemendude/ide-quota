@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "quota": "node bin/quota.js"
+  },
+  "bin": {
+    "ide-quota": "./bin/quota.js"
   },
   "devDependencies": {
     "prettier": "3.8.1"

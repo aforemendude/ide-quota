@@ -7,15 +7,14 @@ const main = async () => {
     // 1. Find the Language Server process PID
     let pid;
     try {
-      const wmicOutput = execSync(
-        `wmic process where "name='language_server_windows_x64.exe'" get ProcessId /format:list`,
+      const psOutput = execSync(
+        `powershell -Command "Get-Process language_server_windows_x64 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id"`,
         { windowsHide: true },
       )
         .toString()
         .trim();
-      const pidMatch = wmicOutput.match(/ProcessId=(\d+)/);
-      if (pidMatch) {
-        pid = pidMatch[1];
+      if (psOutput) {
+        pid = psOutput.split(/\s+/)[0];
       }
     } catch {
       // Error handled below
@@ -28,10 +27,13 @@ const main = async () => {
     // 2. Extract Token
     let token;
     try {
-      const wmicOutput = execSync(`wmic process where "ProcessId=${pid}" get CommandLine /format:list`, {
-        windowsHide: true,
-      }).toString();
-      const tokenMatch = wmicOutput.match(/--csrf_token\s+([^\s]+)/);
+      const psOutput = execSync(
+        `powershell -Command "(Get-CimInstance Win32_Process -Filter 'ProcessId=${pid}').CommandLine"`,
+        {
+          windowsHide: true,
+        },
+      ).toString();
+      const tokenMatch = psOutput.match(/--csrf_token\s+([^\s]+)/);
       if (tokenMatch) {
         token = tokenMatch[1];
       }
