@@ -70,7 +70,7 @@ function getPorts(pid) {
         }
       }
     } catch {
-      // Ignore errors
+      // Return empty array and let the caller handle it
     }
   } else if (platform === 'linux') {
     try {
@@ -85,7 +85,7 @@ function getPorts(pid) {
         }
       }
     } catch {
-      // Ignore errors
+      // Return empty array and let the caller handle it
     }
   }
   return ports;

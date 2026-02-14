@@ -23,7 +23,7 @@ async function fetchUserStatus(port, token) {
       }
     }
   } catch {
-    // Request failed
+    // Return null and let the caller handle it
   }
   return null;
 }
