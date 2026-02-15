@@ -62,4 +62,6 @@ function render(finalJson, activePort) {
   console.log(`${colors.dim}${box.botL}${rule}${box.botR}${colors.reset}`);
 }
 
-module.exports = { render };
+module.exports = {
+  render,
+};

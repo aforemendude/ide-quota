@@ -47,4 +47,10 @@ function formatModelData(status) {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-module.exports = { colors, box, stripAnsi, pad, formatModelData };
+module.exports = {
+  colors,
+  box,
+  stripAnsi,
+  pad,
+  formatModelData,
+};
