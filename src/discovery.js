@@ -2,56 +2,55 @@ const { execSync } = require('child_process');
 
 function getPid() {
   const platform = process.platform;
+  let output;
   if (platform === 'win32') {
     try {
-      const psOutput = execSync(
+      output = execSync(
         `powershell -Command "Get-Process language_server_windows_x64 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id"`,
         { windowsHide: true },
       )
         .toString()
         .trim();
-      if (psOutput) {
-        return psOutput.split(/\s+/)[0];
-      }
     } catch {
       return null;
     }
   } else if (platform === 'linux') {
     try {
-      const pgrepOutput = execSync('pgrep --full language_server_linux_x64').toString().trim();
-      return pgrepOutput.split('\n')[0].trim();
+      output = execSync('pgrep --full language_server_linux_x64').toString().trim();
     } catch {
       return null;
     }
+  } else {
+    throw new Error('Platform not supported');
   }
-  return null;
+  return output.split('\n')[0].trim();
 }
 
 function getToken(pid) {
   const platform = process.platform;
+  let output;
   if (platform === 'win32') {
     try {
-      const psOutput = execSync(
+      output = execSync(
         `powershell -Command "(Get-CimInstance Win32_Process -Filter 'ProcessId=${pid}').CommandLine"`,
         {
           windowsHide: true,
         },
       ).toString();
-      const tokenMatch = psOutput.match(/--csrf_token\s+([^\s]+)/);
-      return tokenMatch ? tokenMatch[1] : null;
     } catch {
       return null;
     }
   } else if (platform === 'linux') {
     try {
-      const psOutput = execSync(`ps -f --pid ${pid}`).toString();
-      const tokenMatch = psOutput.match(/--csrf_token ([^\s]+)/);
-      return tokenMatch ? tokenMatch[1] : null;
+      output = execSync(`ps -f --pid ${pid}`).toString();
     } catch {
       return null;
     }
+  } else {
+    throw new Error('Platform not supported');
   }
-  return null;
+  const tokenMatch = output.match(/--csrf_token ([^\s]+)/);
+  return tokenMatch ? tokenMatch[1] : null;
 }
 
 function getPorts(pid) {
@@ -59,8 +58,8 @@ function getPorts(pid) {
   const ports = [];
   if (platform === 'win32') {
     try {
-      const netstatOutput = execSync(`netstat -ano`, { windowsHide: true }).toString();
-      const lines = netstatOutput.split('\n');
+      const output = execSync(`netstat -ano`, { windowsHide: true }).toString();
+      const lines = output.split('\n');
       for (const line of lines) {
         if (line.includes('LISTENING') && line.includes(pid)) {
           const match = line.match(/127\.0\.0\.1:(\d+)/);
@@ -69,13 +68,11 @@ function getPorts(pid) {
           }
         }
       }
-    } catch {
-      // Return empty array and let the caller handle it
-    }
+    } catch {}
   } else if (platform === 'linux') {
     try {
-      const lsofOutput = execSync(`lsof -n -P -p ${pid}`).toString();
-      const lines = lsofOutput.split('\n');
+      const output = execSync(`lsof -n -P -p ${pid}`).toString();
+      const lines = output.split('\n');
       for (const line of lines) {
         if (line.includes('LISTEN') && line.includes('127.0.0.1:')) {
           const match = line.match(/127\.0\.0\.1:(\d+)/);
@@ -84,9 +81,7 @@ function getPorts(pid) {
           }
         }
       }
-    } catch {
-      // Return empty array and let the caller handle it
-    }
+    } catch {}
   }
   return ports;
 }
