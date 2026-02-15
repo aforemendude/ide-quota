@@ -1,4 +1,4 @@
-const { getPid, getToken, getPorts } = require('./discovery');
+const { getPid, getCsrfToken, getPorts } = require('./discovery');
 const { probePorts } = require('./api');
 const { render } = require('./ui');
 
@@ -10,20 +10,19 @@ async function run() {
       process.exit(1);
     }
 
-    const token = await getToken(pid);
-    if (!token) {
+    const csrfToken = await getCsrfToken(pid);
+    if (!csrfToken) {
       console.error('❌ Error: Could not find CSRF token.');
       process.exit(1);
     }
 
     const ports = await getPorts(pid);
-
     if (ports.length === 0) {
       console.error('❌ Error: Could not find any listening ports. Type a character in the IDE to wake up the server.');
       process.exit(1);
     }
 
-    const result = await probePorts(ports, token);
+    const result = await probePorts(ports, csrfToken);
     if (!result) {
       console.error('❌ Error: Could not get a valid response. Type a character in the IDE to wake up the server.');
       process.exit(1);

@@ -29,7 +29,7 @@ async function getPid() {
   return output.split('\n')[0].trim();
 }
 
-async function getToken(pid) {
+async function getCsrfToken(pid) {
   const platform = process.platform;
   let output;
   if (platform === 'win32') {
@@ -87,8 +87,14 @@ async function getPorts(pid) {
         }
       }
     } catch {}
+  } else {
+    throw new Error('Platform not supported');
   }
   return ports;
 }
 
-module.exports = { getPid, getToken, getPorts };
+module.exports = {
+  getPid,
+  getCsrfToken,
+  getPorts,
+};

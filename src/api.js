@@ -22,20 +22,23 @@ async function fetchUserStatus(port, token) {
         return data;
       }
     }
-  } catch {
-    // Return null and let the caller handle it
-  }
+  } catch {}
   return null;
 }
 
-async function probePorts(ports, token) {
+async function probePorts(ports, csrfToken) {
   for (const port of ports) {
-    const data = await fetchUserStatus(port, token);
+    const data = await fetchUserStatus(port, csrfToken);
     if (data) {
-      return { data, port };
+      return {
+        data,
+        port,
+      };
     }
   }
   return null;
 }
 
-module.exports = { probePorts };
+module.exports = {
+  probePorts,
+};
