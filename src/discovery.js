@@ -1,22 +1,25 @@
-const { execSync } = require('child_process');
+const { exec } = require('child_process');
+const util = require('util');
 
-function getPid() {
+const execAsync = util.promisify(exec);
+
+async function getPid() {
   const platform = process.platform;
   let output;
   if (platform === 'win32') {
     try {
-      output = execSync(
+      const { stdout } = await execAsync(
         `powershell -Command "Get-Process language_server_windows_x64 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id"`,
         { windowsHide: true },
-      )
-        .toString()
-        .trim();
+      );
+      output = stdout.toString().trim();
     } catch {
       return null;
     }
   } else if (platform === 'linux') {
     try {
-      output = execSync('pgrep --full language_server_linux_x64').toString().trim();
+      const { stdout } = await execAsync('pgrep --full language_server_linux_x64');
+      output = stdout.toString().trim();
     } catch {
       return null;
     }
@@ -26,23 +29,25 @@ function getPid() {
   return output.split('\n')[0].trim();
 }
 
-function getToken(pid) {
+async function getToken(pid) {
   const platform = process.platform;
   let output;
   if (platform === 'win32') {
     try {
-      output = execSync(
+      const { stdout } = await execAsync(
         `powershell -Command "(Get-CimInstance Win32_Process -Filter 'ProcessId=${pid}').CommandLine"`,
         {
           windowsHide: true,
         },
-      ).toString();
+      );
+      output = stdout.toString();
     } catch {
       return null;
     }
   } else if (platform === 'linux') {
     try {
-      output = execSync(`ps -f --pid ${pid}`).toString();
+      const { stdout } = await execAsync(`ps -f --pid ${pid}`);
+      output = stdout.toString();
     } catch {
       return null;
     }
@@ -53,13 +58,13 @@ function getToken(pid) {
   return tokenMatch ? tokenMatch[1] : null;
 }
 
-function getPorts(pid) {
+async function getPorts(pid) {
   const platform = process.platform;
   const ports = [];
   if (platform === 'win32') {
     try {
-      const output = execSync(`netstat -ano`, { windowsHide: true }).toString();
-      const lines = output.split('\n');
+      const { stdout } = await execAsync(`netstat -ano`, { windowsHide: true });
+      const lines = stdout.toString().split('\n');
       for (const line of lines) {
         if (line.includes('LISTENING') && line.includes(pid)) {
           const match = line.match(/127\.0\.0\.1:(\d+)/);
@@ -71,8 +76,8 @@ function getPorts(pid) {
     } catch {}
   } else if (platform === 'linux') {
     try {
-      const output = execSync(`lsof -n -P -p ${pid}`).toString();
-      const lines = output.split('\n');
+      const { stdout } = await execAsync(`lsof -n -P -p ${pid}`);
+      const lines = stdout.toString().split('\n');
       for (const line of lines) {
         if (line.includes('LISTEN') && line.includes('127.0.0.1:')) {
           const match = line.match(/127\.0\.0\.1:(\d+)/);
