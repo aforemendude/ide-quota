@@ -30,11 +30,11 @@ function pad(str, len) {
 }
 
 function formatModelData(status) {
-  const modelConfigs = status.cascadeModelConfigData?.clientModelConfigs || [];
-  return modelConfigs
+  return status.cascadeModelConfigData.clientModelConfigs
     .filter((c) => c.quotaInfo)
     .map((config) => {
-      const pct = Math.round(config.quotaInfo.remainingFraction * 100);
+      const remainingFraction = config.quotaInfo.remainingFraction ?? 0;
+      const pct = Math.round(remainingFraction * 100);
       const resetDate = new Date(config.quotaInfo.resetTime);
       const diffMs = Math.max(0, resetDate - Date.now());
       const diffMin = Math.round(diffMs / 60000);

@@ -1,3 +1,7 @@
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
 async function fetchUserStatus(port, token) {
   try {
     const response = await fetch(
@@ -18,7 +22,7 @@ async function fetchUserStatus(port, token) {
     );
     if (response.ok) {
       const data = await response.json();
-      if (data && data.userStatus) {
+      if (isObject(data) && isObject(data.userStatus)) {
         return data;
       }
     }

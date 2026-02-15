@@ -9,7 +9,6 @@ function makeBar(pct, width = 20) {
 
 function render(finalJson, activePort) {
   const status = finalJson.userStatus;
-  const planInfo = status.planStatus?.planInfo || {};
   const models = formatModelData(status);
 
   const nameWidth = Math.max(5, ...models.map((m) => m.name.length));
@@ -25,12 +24,12 @@ function render(finalJson, activePort) {
     return `${colors.dim}${box.vBar}${colors.reset}${content}${' '.repeat(padding)}${colors.dim}${box.vBar}${colors.reset}`;
   };
 
-  const planStr = `Plan: ${planInfo.planName || 'N/A'}`;
+  const planStr = `Plan: ${status.planStatus.planInfo.planName}`;
   const portStr = `Port: ${activePort}`;
   const planPortGap = Math.max(1, innerWidth - planStr.length - portStr.length - 2);
 
   console.log(`${colors.dim}${box.topL}${rule}${box.topR}${colors.reset}`);
-  console.log(padLine(` ${colors.bold}${colors.cyan}${status.name || 'N/A'}${colors.reset}`));
+  console.log(padLine(` ${colors.bold}${colors.cyan}${status.name}${colors.reset}`));
   console.log(padLine(` ${colors.dim}${status.email}${colors.reset}`));
   console.log(
     padLine(
