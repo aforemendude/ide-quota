@@ -2,6 +2,8 @@ const { getPid, getCsrfToken, getPorts } = require('./discovery');
 const { probePorts } = require('./api');
 const { render } = require('./ui');
 
+const debugMode = process.argv.includes('--debug');
+
 async function run() {
   try {
     const pid = await getPid();
@@ -26,6 +28,11 @@ async function run() {
     if (!result) {
       console.error('❌ Error: Could not get a valid response. Type a character in the IDE to wake up the server.');
       process.exit(1);
+    }
+
+    if (debugMode) {
+      console.log(JSON.stringify(result.data, null, 2));
+      console.log();
     }
 
     render(result.data, result.port);

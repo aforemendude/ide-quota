@@ -25,6 +25,20 @@ The script automatically detects your operating system and routes to the correct
 npm start
 ```
 
+### Options
+
+| Flag      | Description                                                                 |
+| --------- | --------------------------------------------------------------------------- |
+| `--debug` | Prints the full raw JSON response from the IDE instead of the dashboard UI. |
+
+#### Debug Mode
+
+Use `--debug` to dump the complete JSON payload, which is useful for troubleshooting or inspecting all available fields:
+
+```bash
+npm start -- --debug
+```
+
 ## 🛠️ Installation (Optional)
 
 You can link the package locally to run it from anywhere:
